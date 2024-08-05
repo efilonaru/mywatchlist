@@ -3,24 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/home">
+    app:startDestination="@id/fragment_home">
 
     <fragment
-        android:id="@+id/home"
+        android:id="@+id/fragment_home"
         android:name="com.example.mywatchlist.home.Home"
         android:label="Home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_details"
+            app:destination="@id/fragment_details" />
+    </fragment>
 
     <fragment
-        android:id="@+id/search"
-        android:name="com.example.mywatchlist.home.Home"
-        android:label="Search"
-        tools:layout="@layout/fragment_home" />
-<!--    -->
+        android:id="@+id/fragment_details"
+        android:name="com.example.mywatchlist.home.DetailFragment"
+        android:label="Details" />
+
     <fragment
-        android:id="@+id/favorite"
-        android:name="com.example.mywatchlist.home.Home"
-        android:label="Favorite"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/fragment_favorite"
+        android:name="com.example.mywatchlist.favorite.FavoriteFragment"
+        android:label="Favorite" />
+
+    <fragment
+        android:id="@+id/fragment_about"
+        android:name="com.example.mywatchlist.about.AboutFragment"
+        android:label="About" />
 
 </navigation>

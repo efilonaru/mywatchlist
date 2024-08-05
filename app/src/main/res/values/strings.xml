@@ -6,4 +6,11 @@
     <string name="title_favorite">Favorite</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="developer_info">MyWatchList is an app to manage your Movies or TV Series you want to watch. You can discover what Movies or TVs trending today. This app made for Dicoding Android Expert Course.</string>
+    <string name="movie_poster">Movie Poster</string>
+    <string name="release_date">Release Date: %s</string>
+    <string name="rating">Rating: %.1f</string>
+    <string name="popularity">Popularity: %.1f</string>
+    <string name="genres">Genres: %s</string>
+    <string name="movie_overview">Overview: No description available.</string>
 </resources>
