@@ -57,13 +57,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation (libs.androidx.viewpager2)
-
-//    implementation (libs.hilt.android.v2481)
-//    kapt (libs.hilt.compiler.v2481)
-
     implementation ("com.google.dagger:hilt-android:2.51.1")
     kapt ("com.google.dagger:hilt-compiler:2.51.1")
-
 
     implementation(libs.kotlinx.coroutines.android)
 

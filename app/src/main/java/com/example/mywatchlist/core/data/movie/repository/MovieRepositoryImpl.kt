@@ -5,17 +5,21 @@ import com.example.mywatchlist.core.data.movie.model.Movie
 import com.example.mywatchlist.core.data.movie.model.MovieDetail
 import com.example.mywatchlist.core.data.movie.model.MovieEntity
 import com.example.mywatchlist.core.data.movie.remote.MovieService
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class MovieRepositoryImpl(
     private val apiService: MovieService,
     private val movieDao: MovieDao
 ) : MovieRepository {
-    override suspend fun getPopularMovies(apiKey: String): List<Movie> {
+    override fun getPopularMovies(apiKey: String): Flow<List<Movie>> = flow{
         val response = apiService.getPopularMovies(apiKey)
-        return if (response.isSuccessful) {
-            response.body()?.results?.map { Movie(it?.id!!, it.title!!, it.overview!!, it.voteAverage!!, it.posterPath!!) } ?: emptyList()
+        if (response.isSuccessful) {
+            val movies = response.body()?.results?.map { Movie(it?.id!!, it.title!!, it.overview!!, it.voteAverage!!, it.posterPath!!) } ?: emptyList()
+            emit(movies)
         } else {
-            emptyList()
+            emit(emptyList())
         }
     }
 
@@ -39,6 +43,14 @@ class MovieRepositoryImpl(
             )
         } else {
             throw Exception("Failed to fetch movie details")
+        }
+    }
+
+    override fun getFavoriteMovies(): Flow<List<Movie>> {
+        return movieDao.getAllMovies().map { entities ->
+            entities.map { entity ->
+                Movie(entity.id, entity.title, entity.overview, 0.0, entity.posterUrl)
+            }
         }
     }
 

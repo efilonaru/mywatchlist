@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -17,6 +20,8 @@ import com.example.mywatchlist.core.ui.ViewModelFactory
 import com.example.mywatchlist.databinding.FragmentHomeBinding
 import com.example.mywatchlist.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class Home : Fragment() {
@@ -55,20 +60,24 @@ class Home : Fragment() {
     }
 
     private fun observeViewModel() {
-        viewModel.movies.observe(viewLifecycleOwner) { resource ->
-            when (resource) {
-                is Result.Loading -> {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.rvMovies.visibility = View.GONE
-                }
-                is Result.Success -> {
-                    binding.progressBar.visibility = View.GONE
-                    binding.rvMovies.visibility = View.VISIBLE
-                    movieAdapter.submitList(resource.data)
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Toast.makeText(context, resource.message, Toast.LENGTH_SHORT).show()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.movies.collectLatest { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            binding.rvMovies.visibility = View.GONE
+                        }
+                        is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            binding.rvMovies.visibility = View.VISIBLE
+                            movieAdapter.submitList(result.data)
+                        }
+                        is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
         }
