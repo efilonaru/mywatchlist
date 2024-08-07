@@ -16,9 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.load.engine.Resource
 import com.example.mywatchlist.R
-import com.example.mywatchlist.core.ui.ViewModelFactory
 import com.example.mywatchlist.databinding.FragmentHomeBinding
-import com.example.mywatchlist.utils.Result
+import com.example.core.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -64,16 +63,16 @@ class Home : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.movies.collectLatest { result ->
                     when (result) {
-                        is Result.Loading -> {
+                        is com.example.core.utils.Result.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                             binding.rvMovies.visibility = View.GONE
                         }
-                        is Result.Success -> {
+                        is com.example.core.utils.Result.Success -> {
                             binding.progressBar.visibility = View.GONE
                             binding.rvMovies.visibility = View.VISIBLE
                             movieAdapter.submitList(result.data)
                         }
-                        is Result.Error -> {
+                        is com.example.core.utils.Result.Error -> {
                             binding.progressBar.visibility = View.GONE
                             Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
                         }

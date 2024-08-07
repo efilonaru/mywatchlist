@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.mywatchlist.core.data.movie.model.Movie
+import com.example.core.data.movie.model.Movie
 import com.example.mywatchlist.databinding.ItemMovieBinding
 
-class HomeAdapter(private val onItemClick: (Movie) -> Unit) :
-    ListAdapter<Movie, HomeAdapter.MovieViewHolder>(MovieDiffCallback()) {
+class HomeAdapter(private val onItemClick: (com.example.core.data.movie.model.Movie) -> Unit) :
+    ListAdapter<com.example.core.data.movie.model.Movie, HomeAdapter.MovieViewHolder>(MovieDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,10 +23,10 @@ class HomeAdapter(private val onItemClick: (Movie) -> Unit) :
 
     class MovieViewHolder(
         private val binding: ItemMovieBinding,
-        private val onItemClick: (Movie) -> Unit
+        private val onItemClick: (com.example.core.data.movie.model.Movie) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(movie: Movie) {
+        fun bind(movie: com.example.core.data.movie.model.Movie) {
             binding.titleMovie.text = movie.title
             binding.overviewMovie.text = movie.overview
             binding.ratingMovie.text = String.format("Rating: %.1f", movie.rating)
@@ -41,12 +41,12 @@ class HomeAdapter(private val onItemClick: (Movie) -> Unit) :
     }
 }
 
-class MovieDiffCallback : DiffUtil.ItemCallback<Movie>() {
-    override fun areItemsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+class MovieDiffCallback : DiffUtil.ItemCallback<com.example.core.data.movie.model.Movie>() {
+    override fun areItemsTheSame(oldItem: com.example.core.data.movie.model.Movie, newItem: com.example.core.data.movie.model.Movie): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Movie, newItem: Movie): Boolean {
+    override fun areContentsTheSame(oldItem: com.example.core.data.movie.model.Movie, newItem: com.example.core.data.movie.model.Movie): Boolean {
         return oldItem == newItem
     }
 }

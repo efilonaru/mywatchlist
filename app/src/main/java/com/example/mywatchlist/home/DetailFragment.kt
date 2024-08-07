@@ -7,12 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.mywatchlist.R
+import com.example.core.data.movie.model.Movie
 import com.example.mywatchlist.databinding.FragmentDetailBinding
 import com.example.mywatchlist.databinding.FragmentHomeBinding
-import com.example.mywatchlist.utils.Result
+import com.example.core.utils.Result
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class DetailFragment : Fragment() {
@@ -36,16 +39,18 @@ class DetailFragment : Fragment() {
         val movieId = arguments?.getInt("MOVIE_ID") ?: return
         val apiKey = "8c74f17a84f11134bec6ce0e6e72c8e8"
 
+        setupFavoriteButton()
+
         // Call function to load movie details
         viewModel.getMovieDetail(movieId, apiKey)
 
         // Observe movie details LiveData
         viewModel.movieDetail.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is com.example.mywatchlist.utils.Result.Loading -> {
+                is com.example.core.utils.Result.Loading -> {
                     // Show loading indicator (optional)
                 }
-                is com.example.mywatchlist.utils.Result.Success -> {
+                is com.example.core.utils.Result.Success -> {
                     val movie = result.data
                     binding.apply {
                         movieTitle.text = movie!!.title
@@ -61,12 +66,34 @@ class DetailFragment : Fragment() {
                             .into(moviePoster)
                     }
                 }
-                is Result.Error -> {
+                is com.example.core.utils.Result.Error -> {
                     // Show error message
                     Toast.makeText(requireContext(), result.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.isFavorite.collect { isFavorite ->
+                updateFavoriteButton(isFavorite)
+            }
+        }
+    }
+
+    private fun setupFavoriteButton() {
+        binding.favoriteButton.setOnClickListener {
+            viewModel.toggleFavorite()
+            Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun updateFavoriteButton(isFavorite: Boolean) {
+        val icon = if (isFavorite) {
+            R.drawable.baseline_favorite_24
+        } else {
+            R.drawable.baseline_favorite_border_24
+        }
+        binding.favoriteButton.setImageResource(icon)
     }
 
     override fun onDestroyView() {
